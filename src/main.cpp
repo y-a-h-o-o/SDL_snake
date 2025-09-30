@@ -2,75 +2,53 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-// constexpr -> constant at compile time. 
+struct SDL_context {
+	SDL_Window *window; 
+	SDL_Renderer *renderer; 
+}; 
+
 constexpr int screen_width = 640; 
 constexpr int screen_height = 480; 
 
-/* Function Prototype */ 
-
-// start SDL; create window
-bool init(); 
-
-// free media + shut down SDL
-void close(); 
-
-/* Global Variabls - Never use in actual code; Only for demos */ 
-
-// pointer to window we are rendering to. 
-SDL_Window* gWindow{ nullptr }; 
-
-// surface contained by window
-SDL_Surface* gScreenSurface{ nullptr }; 
-
-// image loaded onto screen. 
-SDL_Surface* gHelloWorld{ nullptr };
-
-bool init() {
-	// Initalize SDL
+bool init_context(SDL_context& ctx) {
 	if(!SDL_Init(SDL_INIT_VIDEO)) {
 		SDL_Log("SDL could not initalize! SDL error: %s\n", SDL_GetError());		
 		return false;
 	}
 	
-	// Create window
-	if((gWindow = SDL_CreateWindow("Window", screen_width, screen_height, 0)) == nullptr) {
-		SDL_Log("Window could not be created! SDL error: %s\n", SDL_GetError());		
+	if(!SDL_CreateWindowAndRenderer("Window Test", screen_width, screen_height, 0, &(ctx.window), &(ctx.renderer))) {
+		SDL_Log("Couldn't create window/renderer: %s\n", SDL_GetError()); 
 		return false; 
 	}
-	
-	// Get Window Surface
-	gScreenSurface = SDL_GetWindowSurface(gWindow); 
-
 	return true; 
 }
 
-void close() {
-	// Destroy Surface
-	SDL_DestroySurface(gHelloWorld); 
-	gHelloWorld = nullptr; 
+void delete_context(SDL_context& ctx) {
+	// Destroy Renderer before window. 
 
-	// Destroy Window
-	SDL_DestroyWindow(gWindow); 
-	gWindow = nullptr; 
-	gScreenSurface = nullptr; 
-	
-	// Quit SDL subsystems
-	SDL_Quit(); 
+	SDL_DestroyRenderer(ctx.renderer);
+	ctx.renderer = nullptr; 
+	SDL_DestroyWindow(ctx.window); 	
+	ctx.window = nullptr; 
 }
 
 int main(int arc, char** arv) {
-	if(!init()) {
+	SDL_context app; 
+
+	if(!init_context(app)) {
 		SDL_Log("Unable to initalize program"); 	
 		return 1; 
 	}
 	
 	bool quit = false; 
-
+	
+	// SDL_Event object to check for events; I am using this instead of SDL_Callbacks
+	// Because it is easier for me to understand.
 	SDL_Event e; 
-
-	// Wrapper to initalize SDL_Event. 
 	SDL_zero(e); 
 	
+	SDL_FRect test_rect; 
+
 	while(!quit) {
 		while(SDL_PollEvent(&e)) {
 			if(e.type == SDL_EVENT_QUIT) {
@@ -78,12 +56,19 @@ int main(int arc, char** arv) {
 			}	
 		}
 		
-		// Fill surface white 
-		SDL_FillSurfaceRect(gScreenSurface, nullptr, SDL_MapSurfaceRGB(gScreenSurface, 0xFF, 0xFF, 0xFF)); 
+		const Uint64 now = SDL_GetTicks(); 
+		SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, SDL_ALPHA_OPAQUE); 
+		SDL_RenderClear(app.renderer); 	
+
+		test_rect.x = (now % screen_width); 
+		test_rect.y = (screen_height / 2) - 50; 
+		test_rect.w = test_rect.h = 100; 
 		
-		SDL_UpdateWindowSurface(gWindow); 
+		SDL_SetRenderDrawColor(app.renderer, 0, 0, 255, SDL_ALPHA_OPAQUE); 
+		SDL_RenderFillRect(app.renderer, &test_rect); 
+		SDL_RenderPresent(app.renderer); 
 	}	
 	
-	close(); 
+	delete_context(app); 	
 	return 0;
 }
