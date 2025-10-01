@@ -1,5 +1,5 @@
-#ifndef GRAPHICS
-#define GRAPHICS
+#ifndef GRAPHICS_HANDLER_H
+#define GRAPHICS_HANDLER_H
 
 #include <SDL3/SDL.h>
 

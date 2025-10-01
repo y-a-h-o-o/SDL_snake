@@ -49,7 +49,6 @@ int main(int arc, char** arv) {
 			timer = 0; 
 			draw_count = 0; 
 		}
-		
 	}	
 	
 	delete_context(app); 	
