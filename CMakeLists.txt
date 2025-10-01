@@ -17,6 +17,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
 # Add SDL 
 add_subdirectory(extern/SDL EXCLUDE_FROM_ALL) 
 
-# Add src subdirectory only for now. 
-
+# Add src subdirectory 
 add_subdirectory(src) 
