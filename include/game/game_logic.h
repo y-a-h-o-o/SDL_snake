@@ -11,7 +11,7 @@ enum game_state {
 }; 
 
 struct Player{
-	SDL_FRect* box; 
+	SDL_FRect box; 
 	float vel_x; 
 	float vel_y; 
 };  

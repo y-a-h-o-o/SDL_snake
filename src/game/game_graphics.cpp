@@ -9,5 +9,5 @@ void render_game(SDL_Renderer* renderer) {
 		return; 
 	}
 	const Game& game = get_game(); 
-	fill_rect(*(game.player->box), 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
+	fill_rect(game.player->box, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
 }
