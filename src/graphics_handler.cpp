@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 
 bool init_context(SDL_context& ctx) {
-	if(!SDL_Init(SDL_INIT_VIDEO)) {
+	if(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)) {
 		SDL_Log("SDL could not initalize! SDL error: %s\n", SDL_GetError());		
 		return false;
 	}
@@ -23,7 +23,7 @@ void delete_context(SDL_context& ctx) {
 	ctx.window = nullptr; 
 }
 
-void fill_rect(SDL_FRect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* renderer) {
+void fill_rect(const SDL_FRect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Renderer* renderer) {
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);	
 	SDL_RenderFillRect(renderer, &rect);
 } 

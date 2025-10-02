@@ -2,7 +2,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include "graphics_handler.h" 
-#include "game/game_graphics.h"	
+#include "game/game_logic.h"
+#include "game/game_graphics.h"
 
 int main(int arc, char** arv) {
 	SDL_context app; 
@@ -29,7 +30,8 @@ int main(int arc, char** arv) {
 		while(SDL_PollEvent(&e)) {
 			if(e.type == SDL_EVENT_QUIT) {
 				quit = true; 
-			}	
+			}
+			update_game_state(e); 
 		}
 		
 		constexpr Uint64 ns_per_frame = (1e9) / fps; 	
@@ -39,6 +41,7 @@ int main(int arc, char** arv) {
 		prev_time = now;
 
 		if(delta >= ns_per_frame) {
+			update_game(); 
 			render(app.renderer, render_game);
 			draw_count++;
 			delta -= ns_per_frame; 

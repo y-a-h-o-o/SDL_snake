@@ -1,18 +1,13 @@
 #include <SDL3/SDL.h>
+#include "game/game_graphics.h"
+#include "game/game_logic.h"
 #include "graphics_handler.h"
 
-static SDL_FRect player {
-	0, 
-	(screen_height / 2) - 50, 
-	100, 
-	100
-};
-
 void render_game(SDL_Renderer* renderer) {
-	player.x += 5; 
-	if(player.x >= screen_width) {
-		player.x = -player.w; 
+	const game_state state = get_game_state();
+	if(state == CLOSING) {
+		return; 
 	}
-	fill_rect(player, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
+	const Game& game = get_game(); 
+	fill_rect(*(game.player->box), 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
 }
-
