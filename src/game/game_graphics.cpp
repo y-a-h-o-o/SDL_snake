@@ -5,9 +5,13 @@
 
 void render_game(SDL_Renderer* renderer) {
 	const game_state state = get_game_state();
-	if(state == CLOSING) {
-		return; 
+	switch(state) {
+		case TITLE: break; 
+		case RUNNING: {
+			const Game& game = get_game(); 
+			fill_rect(game.player->box, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
+		} break; 
+		case END: break; 
+		case CLOSING: return;  
 	}
-	const Game& game = get_game(); 
-	fill_rect(game.player->box, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
 }
