@@ -46,11 +46,15 @@ int main(int arc, char** arv) {
 			draw_count++;
 			delta -= ns_per_frame; 
 		}
-	
+		
 		if(timer >= 1e9) {
 			// SDL_Log("FPS: %d", draw_count); 
 			timer = 0; 
 			draw_count = 0; 
+		}
+
+		if(quit) {
+			delete_game(); 
 		}
 	}	
 	

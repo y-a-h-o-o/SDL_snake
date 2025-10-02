@@ -51,8 +51,12 @@ void update_game_state(const SDL_Event&);
 
 void update_game(); 
 
+void delete_game(); 
+
 const game_state get_game_state(); 
 
 const Game& get_game(); 
+
+const long long get_score();  
 
 #endif

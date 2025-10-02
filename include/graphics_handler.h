@@ -7,7 +7,7 @@
 
 constexpr int screen_width = block_size * game_width;  
 constexpr int screen_height = block_size * game_height; 
-constexpr int fps = 8; 
+constexpr int fps = 16; 
 
 struct SDL_context {
 	SDL_Window *window; 

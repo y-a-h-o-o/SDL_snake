@@ -7,7 +7,7 @@ bool init_context(SDL_context& ctx) {
 		return false;
 	}
 	
-	if(!SDL_CreateWindowAndRenderer("Window Test", screen_width, screen_height, 0, &(ctx.window), &(ctx.renderer))) {
+	if(!SDL_CreateWindowAndRenderer("SDL Snake", screen_width, screen_height, 0, &(ctx.window), &(ctx.renderer))) {
 		SDL_Log("Couldn't create window/renderer: %s\n", SDL_GetError()); 
 		return false; 
 	}

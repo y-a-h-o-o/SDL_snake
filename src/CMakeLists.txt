@@ -4,7 +4,6 @@ add_executable(
 	SDL_snake
 	main.cpp
 	graphics_handler.cpp
-	audio_handler.cpp
 )
 
 target_include_directories(SDL_snake

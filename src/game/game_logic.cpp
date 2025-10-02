@@ -2,15 +2,20 @@
 #include <vector>
 #include <set>
 #include <utility>
+#include <stdlib.h>
 #include "game/game_logic.h" 
 
 static game_state current_game_state = TITLE; 
+
+static bool game_start_key = false; 
 
 static Game game; 
 
 static player_direction next_direction = RIGHT; 
 
 static std::set<std::pair<int, int>> filled; 
+
+static long long high_score = 0; 
 
 static void init_game() {
 	game.player = new Player;
@@ -55,25 +60,38 @@ static void reset_game() {
 	}
 }
 
-static void close_game() {
+void delete_game() {
 	delete game.player; 
-	game.player = nullptr;
-	SDL_Log("Player Deleted ...");
-	SDL_Log("Game Deleted...");
+	game.player = nullptr; 	
+	SDL_Log("Deleting Player");
+	SDL_Log("Cleaned Up Game");
+}
+
+static void push_quit() {
+	SDL_Event quit_event; 
+	SDL_zero(quit_event); 
+	quit_event.type = SDL_EVENT_QUIT; 
+	SDL_PushEvent(&quit_event); 	
 }
 
 void update_game_state(const SDL_Event& e) {
-	if(e.type == SDL_EVENT_QUIT) {
-		SDL_Log("Shutting Down ...");
-		current_game_state = CLOSING; 	
-	} else if(e.type == SDL_EVENT_KEY_DOWN) {
+	if(e.type == SDL_EVENT_KEY_DOWN) {
 		switch(e.key.scancode) {
+			case SDL_SCANCODE_Q: 
+			case SDL_SCANCODE_ESCAPE: push_quit(); break;
 			case SDL_SCANCODE_UP: next_direction = UP; break; 
 			case SDL_SCANCODE_DOWN: next_direction = DOWN; break; 
 			case SDL_SCANCODE_LEFT:  next_direction = LEFT; break;
 			case SDL_SCANCODE_RIGHT: next_direction = RIGHT; break;
+			case SDL_SCANCODE_RETURN: {
+				game_start_key = true; 
+			} break; 
 		}
-	} 
+	} else if(e.type == SDL_EVENT_KEY_UP) {
+		if(e.key.scancode == SDL_SCANCODE_RETURN) {
+			game_start_key = false; 
+		}	
+	}
 }
 
 static void update_cell(body_cell& c) {
@@ -167,15 +185,26 @@ static void eat_apple() {
 
 void update_game() {
 	switch (current_game_state) {
-		// TODO: Title and End states have nothing right now. 
-		case TITLE: current_game_state = RUNNING; init_game(); break;
+		case TITLE: {
+			if(game_start_key) {
+				init_game(); 
+				current_game_state = RUNNING; 
+			}
+		} break;
 		case RUNNING: 
 		{
 			move_player(); 
 			eat_apple(); 
 		} break; 	
-		case END: reset_game(); current_game_state = RUNNING; break;
-		case CLOSING: close_game(); break; 
+		case END: {
+			if(game.player->body.size() - inital_body_size > high_score) {
+				high_score = game.player->body.size() - inital_body_size; 
+			}
+			if(game_start_key) {
+				reset_game(); 
+				current_game_state = RUNNING;
+			}
+		} break;
 	}		
 }
 
@@ -186,3 +215,7 @@ const game_state get_game_state() {
 const Game& get_game() {
 	return game; 
 }
+
+const long long get_score() {
+	return high_score; 
+} 
