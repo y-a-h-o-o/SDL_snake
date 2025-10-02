@@ -7,11 +7,35 @@ void render_game(SDL_Renderer* renderer) {
 	const game_state state = get_game_state();
 	switch(state) {
 		case TITLE: break; 
+		case END : 
 		case RUNNING: {
 			const Game& game = get_game(); 
-			fill_rect(game.player->box, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer);
+			Player* p = game.player;
+			for(int i = 0; i < (p->body).size(); i++) {
+				SDL_FRect temp = {
+					(block_size * p->body[i].x), 
+					(block_size * p->body[i].y), 
+					block_size, 
+					block_size
+				}; 
+
+				if(i == HEAD) {
+					fill_rect(temp, 255, 255, 0, SDL_ALPHA_OPAQUE, renderer); 	
+				} else {
+					fill_rect(temp, 0, 128, 0, SDL_ALPHA_OPAQUE, renderer);
+				}
+			}
+
+			for(int i = 0; i < max_apples; i++) {
+				SDL_FRect temp = {
+					(block_size * game.apples[i].x), 
+					(block_size * game.apples[i].y), 
+					block_size,
+					block_size
+				};
+				fill_rect(temp, 0, 0, 255, SDL_ALPHA_OPAQUE, renderer); 
+			}
 		} break; 
-		case END: break; 
 		case CLOSING: return;  
 	}
 }

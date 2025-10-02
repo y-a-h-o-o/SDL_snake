@@ -3,10 +3,11 @@
 #define GRAPHICS_HANDLER_H
 
 #include <SDL3/SDL.h>
+#include "game/game_logic.h"
 
-constexpr int screen_width = 640; 
-constexpr int screen_height = 480; 
-constexpr int fps = 60; 
+constexpr int screen_width = block_size * game_width;  
+constexpr int screen_height = block_size * game_height; 
+constexpr int fps = 8; 
 
 struct SDL_context {
 	SDL_Window *window; 
