@@ -36,23 +36,16 @@ int main(int arc, char** arv) {
 		
 		constexpr Uint64 ns_per_frame = (1e9) / fps; 	
 		const Uint64 now = SDL_GetTicksNS(); 
-		delta += now - prev_time; 
-		timer += now - prev_time; 
-		prev_time = now;
 
-		if(delta >= ns_per_frame) {
-			update_game(); 
-			render(app.renderer, render_game);
-			draw_count++;
-			delta -= ns_per_frame; 
-		}
+		update_game(); 
+		render(app.renderer, render_game);
+
+		Uint64 updraw_time = SDL_GetTicksNS() - now; 
 		
-		if(timer >= 1e9) {
-			// SDL_Log("FPS: %d", draw_count); 
-			timer = 0; 
-			draw_count = 0; 
+		if(ns_per_frame - updraw_time > 0) {
+			SDL_DelayPrecise(ns_per_frame - updraw_time); 
 		}
-
+			
 		if(quit) {
 			delete_game(); 
 		}
